@@ -204,6 +204,7 @@ async def create_image(username, number, avatar_url, border_color):
     return base_image
 
 async def main():
+    asyncio.create_task(hourly_check())
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
