@@ -149,9 +149,14 @@ async def fetch_user_data():
                 soup = BeautifulSoup(response.text, 'html.parser')
                 
                 username_elem = soup.find(class_='hiddenNarrowUnder accountUsername username')
-                username = username_elem.find(class_='style60').get_text(strip=True)
+                if username_elem is None:
+                    raise ValueError("Couldn't find the username element.")
+                
+                username = username_elem.get_text(strip=True)
                 
                 avatar_elem = soup.find(class_='avatar').find('img')
+                if avatar_elem is None:
+                    raise ValueError("Couldn't find the avatar element.")
                 avatar_url = avatar_elem['src']
                 
                 number_elem = soup.find_all(class_='counterText')
@@ -163,6 +168,10 @@ async def fetch_user_data():
                 await asyncio.sleep(5)
             else:
                 raise
+        except Exception as e:
+            print(f"Error fetching data: {e}")
+            raise
+
 
 async def create_image(username, number, avatar_url, border_color):
     base_image = Image.new('RGB', (800, 300), '#A09378')
